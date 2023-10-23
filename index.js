@@ -5,7 +5,7 @@ import dirTree from "directory-tree"
 import fs from 'fs'
 
 const args = process.argv
-const basePath = args[2] ?? "."
+const basePath = args[2] ?? "./"
 
 try {
     if (!fs.existsSync(basePath)) {
@@ -55,7 +55,7 @@ const filePack = {
 
 
 dirTree(
-    `./${basePath}`,
+    `${basePath}`,
     {
         extensions: /\.(png|jpg|wav|ogg|)$/
     },
