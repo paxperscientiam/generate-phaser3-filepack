@@ -1,0 +1,11 @@
+{
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "^20.8.7",
+        "phaser": "^3.60.0"
+    },
+    "dependencies": {
+        "directory-tree": "^3.5.1",
+        "is-image": "^4.0.0"
+    }
+}
