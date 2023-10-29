@@ -1,0 +1,14 @@
+{
+    "targets": [
+        {
+            "key": "gos",
+            "basePath": "assets/game-objects/",
+            "extensions": true
+        },
+        {
+            "key": "lol",
+            "basePath": "assets/",
+            "extensions": true
+        }
+    ]
+}
