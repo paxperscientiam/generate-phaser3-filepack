@@ -1,14 +1,18 @@
 {
     "targets": [
         {
-            "key": "gos",
-            "basePath": "assets/game-objects/",
-            "extensions": true
+            "key": "lol",
+            "basePath": "./assets/game-objects",
+            "extensions": "png,jpg,jpeg"
         },
         {
-            "key": "lol",
-            "basePath": "assets/",
-            "extensions": true
+            "key": "fak",
+            "basePath": "./assets/",
+            "extensions": "png,jpg,jpeg",
+            "ignoredPaths": [
+                "/game-objects/",
+                "/lol/"
+            ]
         }
     ]
 }

@@ -2,7 +2,8 @@
 // when is it ok for keys to repeat?
 // figure out how to college the two assets for bitmap font (xml + image)
 // collect URLs when type=audio and key are same
-//
+// allow override of allowed extensions
+// option to ignore certain subdirectories of AssetTarget.basePath
 
 // support multiple targets!
 
@@ -11,14 +12,23 @@ import fs from 'fs'
 import path from 'path'
 import isImage from 'is-image'
 
+import type  {
+    FilePack
+} from "index.d"
+
 import {
     iConfigSchema,
-    assetTargetSchema
+    iConfigAssetTargetSchema,
+    iPhaserFilePackAssetSchema,
+    iPhaserFilePackFilesSchema
 } from "index.zod"
+
 import { z } from "zod"
 
 type IConfig = z.infer<typeof iConfigSchema>
-type IAssetTarget = z.infer<typeof assetTargetSchema>
+type IAssetTarget = z.infer<typeof iConfigAssetTargetSchema>
+type IFilePackTarget = z.infer<typeof iPhaserFilePackAssetSchema>
+type IMetaFilePack = z.infer<typeof iPhaserFilePackFilesSchema>
 
 const args = process.argv
 
@@ -34,7 +44,6 @@ let configData: IConfig
 try {
     const buffer = fs.readFileSync(configFile, {})
     configData = JSON.parse(buffer.toString())
-    console.log(configData)
     iConfigSchema.parse(configData)
 } catch (e) {
     console.error(e)
@@ -48,17 +57,21 @@ if (!Array.isArray(configData.targets) || 0 === configData.targets.length) {
     process.exit(1)
 }
 
-let regex: RegExp
+let defaultRegex: RegExp
 
 
-if (null == configData.extensions) {
-    regex = new RegExp('/\./')
-} else {
-    const exts = configData.extensions.split(",")
-    regex = new RegExp('\\.(' + exts.join('|') + ')$')
+function str2re(restring: string): RegExp {
+    const exts = restring.split(",")
+    return new RegExp('\\.(' + exts.join('|') + ')$')
 }
 
-function isAudio(filepath: stringM) {
+if (null == configData.extensions) {
+    defaultRegex = new RegExp('/\./')
+} else {
+    defaultRegex = str2re(configData.extensions)
+}
+
+function isAudio(filepath: string) {
     const ext = path.parse(filepath).ext.replace(/^\./, '')
     return [
         "aac",
@@ -90,13 +103,15 @@ function isXML(filepath:string) {
 }
 
 const filePack = {
-}
+} as FilePack
+
 
 // copilot assisted
-function collapseArraySubset(arr) {
+
+function collapseArraySubset(arr: IFilePackTarget[]) {
     const result = [];
     const map = new Map();
-    
+
     for (const obj of arr) {
         const key = obj.key + obj.type;
         if (map.has(key)) {
@@ -106,44 +121,61 @@ function collapseArraySubset(arr) {
             map.set(key, { ...obj, url: [obj.url] });
         }
     }
-    
+
     for (const obj of map.values()) {
         result.push(obj);
     }
-    
+
     return result;
 
 }
 
-function getRedundantKey(arr) {
-    const original = []
-    const duplicates = []
+// function getRedundantKey(arr) {
+//     const original = []
+//     const duplicates = []
 
-    arr.forEach((item, index) => {
-        if (original.includes(item)) {
-            duplicates.push(item)
-        } else {
-            original.push(item)
-        }
-    })
-    return duplicates
-}
+//     arr.forEach((item, index) => {
+//         if (original.includes(item)) {
+//             duplicates.push(item)
+//         } else {
+//             original.push(item)
+//         }
+//     })
+//     return duplicates
+// }
 
-function buildIt(target: IAssetTarget) {
-    dirTree(
+function buildIt(target: IAssetTarget, re: RegExp) {
+    let reFinal = re
+    if ("string" === typeof target.extensions) {
+        reFinal = str2re(target.extensions)
+    }
+
+    const ignoredPaths: RegExp|RegExp[] = []
+
+    if (Array.isArray(target.ignoredPaths)) {
+        target.ignoredPaths.forEach(item => ignoredPaths.push(new RegExp(item)))
+    }
+    if ("string" === typeof target.ignoredPaths) {
+        ignoredPaths.push(new RegExp((target.ignoredPaths)))
+    }
+
+    return dirTree(
         `${target.basePath}`,
         {
-            extensions: regex
+            extensions: reFinal,
+            exclude: ignoredPaths
+
         },
         (item, PATH) => {
             const fileparts = path.parse(PATH)
             const ns = path.basename(target.basePath)
 
             const key = `${ns}/${fileparts.name}`
-            
+
 
             Object.assign(item, {key})
 
+            // @ts-ignore
             delete item.name
             // console.llog(item.name)
 
@@ -157,10 +189,12 @@ function buildIt(target: IAssetTarget) {
                 Object.assign(item, {type: "unknown"})
             }
 
+
+            // @ts-ignore
             if ("bitmapFont" == item.type) {
                 if (isXML(PATH)) {
                     Object.assign(item, {fontDataURL: item.path})
-                }
+                }               // 17
                 if (isImage(PATH)) {
                     Object.assign(item, {textureURL: item.path})
                 }
@@ -169,15 +203,17 @@ function buildIt(target: IAssetTarget) {
             }
 
             // might need to keep item.path
+            // @ts-ignore
             delete item.path
 
             if (!filePack.hasOwnProperty(target.key)) {
-                filePack[target.key] = {
-                    files: []
-                }
+                Object.assign(filePack, {
+                    [target.key]: {
+                        files: []
+                    }
+                })
             }
-
-            filePack[target.key].files.push(item)
+            Reflect.get(filePack, target.key).files.push(item)
         }
     )
 }
@@ -187,27 +223,28 @@ targets.forEach(target => {
         if (!fs.existsSync(target.basePath)) {
             throw `The target directory does not exist: ${target.basePath}`
         }
-
-        buildIt(target)
+        buildIt(target, defaultRegex)
     } catch (err) {
         console.error(err);
         process.exit(1)
     }
 })
 
-Object.assign(filePack, {
+Object.assign<FilePack, any>(filePack, {
     meta: {
         "generated": Date.now()
     }
 })
 
-function hasDuplicateAssetKey(arr) {
-    const l1 = arr.length
-    const dedupedArray = Array.from(new Set(arr))
-    return l1 !== dedupedArray.length
-}
 
-for (const [k, v] of Object.entries(filePack)) {
+// function hasDuplicateAssetKey(arr) {
+//     const l1 = arr.length
+//     const dedupedArray = Array.from(new Set(arr))
+//     return l1 !== dedupedArray.length
+// }
+
+// @ts-ignore
+for (const [_k, v] of Object.entries<IMetaFilePack>(filePack)) {
     if (null == v.files) continue
 
     Object.assign(v, {
@@ -239,3 +276,4 @@ for (const [k, v] of Object.entries(filePack)) {
 // }
 
 console.log(JSON.stringify(filePack, null, 2))
+
