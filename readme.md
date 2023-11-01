@@ -1,6 +1,11 @@
 [Phaser 3](https://github.com/photonstorm/phaser) Pack File Generator
 ---
 
+## WARNING
+This is still a work in progress. Until complete, it will not write a file; however, you can pipe the output to a file.
+
+
+
 This script generates a File Pack in JSON form according to the [framework definition](https://newdocs.phaser.io/docs/3.60.0/focus/Phaser.Loader.LoaderPlugin-pack).
 
 ## Features
