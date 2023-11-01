@@ -1,6 +1,6 @@
 {
     "name": "@paxperscientiam/generate-phaser3-filepack",
-    "bin": "dist/index.msj",
+    "bin": "dist/index.mjs",
     "main": "dist/index.mjs",
     "scripts": {
         "build": "ts-to-zod && tsup --cjsInterop",
