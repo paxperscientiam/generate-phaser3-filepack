@@ -66,7 +66,7 @@ function str2re(restring: string): RegExp {
 }
 
 if (null == configData.extensions) {
-    defaultRegex = new RegExp('/\./')
+    defaultRegex = undefined
 } else {
     defaultRegex = str2re(configData.extensions)
 }

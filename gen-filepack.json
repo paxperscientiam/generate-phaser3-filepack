@@ -2,21 +2,7 @@
     "targets": [
         {
             "key": "lol",
-            "basePath": "./assets/game-objects",
-            "extensions": "png,jpg,jpeg"
-        },
-        {
-            "key": "fak",
-            "basePath": "./assets/",
-            "extensions": "png,jpg",
-            "ignoredPaths": [
-                "/game-objects/",
-                "/lol/"
-            ]
-        },
-        {
-            "key": "something",
-            "basePath": "./assets/styles"
+            "basePath": "./assets/game-objects"
         }
     ]
 }
