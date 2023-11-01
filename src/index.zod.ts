@@ -14,7 +14,7 @@ export const iConfigAssetTargetSchema = z.object({
     .optional(),
   key: z.string(),
   basePath: z.string(),
-  extensions: z.union([z.string(), z.boolean()]),
+  extensions: z.string().optional(),
   ignoredPaths: z.union([z.string(), z.array(z.string())]).optional(),
 });
 
@@ -23,14 +23,14 @@ export const iConfigSchema = z.object({
   targets: z.array(iConfigAssetTargetSchema),
 });
 
-export const iPhaserFilePackAssetSchema = z.object({
+export const iPhaserFilePackGenericAssetSchema = z.object({
   type: z.string(),
   key: z.string(),
   url: z.union([z.string(), z.array(z.string())]),
 });
 
 export const iPhaserFilePackFilesSchema = z.object({
-  files: z.array(iPhaserFilePackAssetSchema),
+  files: z.array(iPhaserFilePackGenericAssetSchema),
 });
 
 export const filePackSchema = z

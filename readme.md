@@ -41,10 +41,10 @@ npx  @paxperscientiam/generate-phaser3-filepack <configfile.json>
 
 
 ### Auto inferred types
-- [x] image
-- [x] audio
-- [ ] binary
-- [ ] css
+- [x] image (:IPhaserFilePackGenericAsset)
+- [x] audio (:IPhaserFilePackGenericAsset)
+- [x] css
+- [ ] binary (:IPhaserFilePackBinaryAsset)
 - [ ] html
 - [ ] json
 - [ ] svg

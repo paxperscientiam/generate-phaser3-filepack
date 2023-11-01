@@ -57,7 +57,7 @@ if (!Array.isArray(configData.targets) || 0 === configData.targets.length) {
     process.exit(1)
 }
 
-let defaultRegex: RegExp
+let defaultRegex: RegExp|undefined
 
 
 function str2re(restring: string): RegExp {
@@ -69,6 +69,11 @@ if (null == configData.extensions) {
     defaultRegex = new RegExp('/\./')
 } else {
     defaultRegex = str2re(configData.extensions)
+}
+
+function isCSS(filepath: string) {
+    const ext = path.parse(filepath).ext.replace(/^\./, '')
+    return "css" === ext
 }
 
 function isAudio(filepath: string) {
@@ -107,7 +112,6 @@ const filePack = {
 
 
 // copilot assisted
-
 function collapseArraySubset(arr: IFilePackTarget[]) {
     const result = [];
     const map = new Map();
@@ -185,6 +189,8 @@ function buildIt(target: IAssetTarget, re: RegExp) {
                 Object.assign(item, {type:"image"})
             } else if (isAudio(PATH)) {
                 Object.assign(item, {type: "audio"})
+            } else if (isCSS(PATH)) {
+                Object.assign(item, {type: "css"})
             } else {
                 Object.assign(item, {type: "unknown"})
             }

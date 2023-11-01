@@ -8,11 +8,15 @@
         {
             "key": "fak",
             "basePath": "./assets/",
-            "extensions": "png,jpg,jpeg",
+            "extensions": "png,jpg",
             "ignoredPaths": [
                 "/game-objects/",
                 "/lol/"
             ]
+        },
+        {
+            "key": "something",
+            "basePath": "./assets/styles"
         }
     ]
 }

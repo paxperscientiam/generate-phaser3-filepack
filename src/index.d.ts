@@ -5,7 +5,7 @@ export interface IConfigAssetTarget {
     hint?: "audio"|"image"|"bitmapFont"|"binary"|"css"|string
     key: string
     basePath: string
-    extensions: string | boolean
+    extensions?: string
     ignoredPaths?: string|string[]
 }
 
@@ -22,17 +22,30 @@ export interface IConfig {
 /**
  * @toExtract
  */
-export interface IPhaserFilePackAsset {
+export type IPhaserFilePackGenericAsset = {
     type: string
     key: string
     url: string | string[]
 }
 
+
 /**
  * @toExtract
  */
-export interface IPhaserFilePackFiles {
-    files: IPhaserFilePackAsset[]
+export type IPhaserFilePackBinaryAsset = {
+    type: string
+    key: string
+    url: string
+    dataType: Uint8Array|unknown
+}
+
+
+
+/**
+ * @toExtract
+ */
+export type IPhaserFilePackFiles = {
+    files: IPhaserFilePackGenericAsset[]
 }
 
 /**
