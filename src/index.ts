@@ -17,6 +17,13 @@ import type  {
 } from "index.d"
 
 import {
+    isText,
+    isCSS,
+    isXML,
+    isAudio
+} from "filetype-check"
+
+import {
     iConfigSchema,
     iConfigAssetTargetSchema,
     iPhaserFilePackAssetSchema,
@@ -71,41 +78,6 @@ if (null == configData.extensions) {
     defaultRegex = str2re(configData.extensions)
 }
 
-function isCSS(filepath: string) {
-    const ext = path.parse(filepath).ext.replace(/^\./, '')
-    return "css" === ext
-}
-
-function isAudio(filepath: string) {
-    const ext = path.parse(filepath).ext.replace(/^\./, '')
-    return [
-        "aac",
-        "aiff",
-        "ape",
-        "au",
-        "flac",
-        "gsm",
-        "it",
-        "m3u",
-        "m4a",
-        "mid",
-        "mod",
-        "mp3",
-        "mpa",
-        "ogg",
-        "pls",
-        "ra",
-        "s3m",
-        "sid",
-        "wav",
-        "wma",
-        "xm",
-    ].includes(ext)
-}
-
-function isXML(filepath:string) {
-    return 'xml' == path.parse(filepath).ext.replace(/^\./, '')
-}
 
 const filePack = {
 } as FilePack
@@ -117,11 +89,17 @@ function collapseArraySubset(arr: IFilePackTarget[]) {
     const map = new Map();
 
     for (const obj of arr) {
+        if(['text','image'].includes(obj.type)) {
+            map.set(obj.key, { ...obj, url: obj.url})
+            continue
+        }
+        
         const key = obj.key + obj.type;
         if (map.has(key)) {
             const existingObj = map.get(key);
             existingObj.url.push(obj.url);
         } else {
+            console.log(key)
             map.set(key, { ...obj, url: [obj.url] });
         }
     }
@@ -131,24 +109,13 @@ function collapseArraySubset(arr: IFilePackTarget[]) {
     }
 
     return result;
-
 }
 
-// function getRedundantKey(arr) {
-//     const original = []
-//     const duplicates = []
+function handleComplexityOne() {
+    // for all assets loaded with key,url,type
+}
 
-//     arr.forEach((item, index) => {
-//         if (original.includes(item)) {
-//             duplicates.push(item)
-//         } else {
-//             original.push(item)
-//         }
-//     })
-//     return duplicates
-// }
-
-function buildIt(target: IAssetTarget, re: RegExp) {
+function buildIt(target: IAssetTarget, re: RegExp|undefined) {
     let reFinal = re
     if ("string" === typeof target.extensions) {
         reFinal = str2re(target.extensions)
@@ -183,6 +150,9 @@ function buildIt(target: IAssetTarget, re: RegExp) {
             delete item.name
             // console.llog(item.name)
 
+            // imagine a filter the moves to new object
+
+
             if (null != target.hint) {
                 Object.assign(item, {type: target.hint})
             } else if (isImage(PATH)) {
@@ -191,6 +161,8 @@ function buildIt(target: IAssetTarget, re: RegExp) {
                 Object.assign(item, {type: "audio"})
             } else if (isCSS(PATH)) {
                 Object.assign(item, {type: "css"})
+            } else if (isText(PATH)) {
+                Object.assign(item, {type: "text"})
             } else {
                 Object.assign(item, {type: "unknown"})
             }
@@ -243,12 +215,6 @@ Object.assign<FilePack, any>(filePack, {
 })
 
 
-// function hasDuplicateAssetKey(arr) {
-//     const l1 = arr.length
-//     const dedupedArray = Array.from(new Set(arr))
-//     return l1 !== dedupedArray.length
-// }
-
 // @ts-ignore
 for (const [_k, v] of Object.entries<IMetaFilePack>(filePack)) {
     if (null == v.files) continue
@@ -257,6 +223,9 @@ for (const [_k, v] of Object.entries<IMetaFilePack>(filePack)) {
         files: collapseArraySubset(v.files)
     })
 }                               // 9
+
+
+console.log(JSON.stringify(filePack, null, 2))
 
 // for (const [k, v] of Object.entries(filePack)) {
 //     if (null == v.files) continue
@@ -280,6 +249,3 @@ for (const [_k, v] of Object.entries<IMetaFilePack>(filePack)) {
 //         console.groupEnd()
 //     }
 // }
-
-console.log(JSON.stringify(filePack, null, 2))
-
