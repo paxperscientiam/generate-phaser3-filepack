@@ -4,7 +4,7 @@
         "noImplicitOverride": true,
         "useDefineForClassFields": true,
         "module": "ESNext",
-        "lib": ["ESNext"],
+        "lib": ["ESNext", "DOM"],
         "moduleResolution": "Node",
         "strict": true,
         "resolveJsonModule": true,

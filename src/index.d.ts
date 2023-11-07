@@ -29,6 +29,10 @@ export type IPhaserFilePackGenericAsset = {
 }
 
 
+interface Uint8Array {
+    " buffer_kind"?: "uint8"; 
+}
+
 /**
  * @toExtract
  */
@@ -36,16 +40,20 @@ export type IPhaserFilePackBinaryAsset = {
     type: string
     key: string
     url: string
-    dataType: Uint8Array|unknown
+    dataType: Uint8Array
 }
-
 
 
 /**
  * @toExtract
  */
+export type IPhaserFilePackAsset = IPhaserFilePackGenericAsset & IPhaserFilePackBinaryAsset
+
+/**
+ * @toExtract
+ */
 export type IPhaserFilePackFiles = {
-    files: IPhaserFilePackGenericAsset[]
+    files: IPhaserFilePackAsset[]
 }
 
 /**

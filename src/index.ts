@@ -10,34 +10,28 @@
 import dirTree from "directory-tree"
 import fs from 'fs'
 import path from 'path'
-import isImage from 'is-image'
 
 import type  {
-    FilePack
+    FilePack, IPhaserFilePackAsset
 } from "index.d"
-
-import {
-    isText,
-    isCSS,
-    isXML,
-    isAudio
-} from "filetype-check"
 
 import {
     iConfigSchema,
     iConfigAssetTargetSchema,
-    iPhaserFilePackAssetSchema,
+    iPhaserFilePackGenericAssetSchema,
     iPhaserFilePackFilesSchema
 } from "index.zod"
 
 import { z } from "zod"
+import { guessWhichProcessor, proxyHandler } from "processors"
+import { isCollapsibleType } from "filetype-check"
 
 type IConfig = z.infer<typeof iConfigSchema>
-type IAssetTarget = z.infer<typeof iConfigAssetTargetSchema>
-type IFilePackTarget = z.infer<typeof iPhaserFilePackAssetSchema>
-type IMetaFilePack = z.infer<typeof iPhaserFilePackFilesSchema>
+    type IAssetTarget = z.infer<typeof iConfigAssetTargetSchema>
+    type IFilePackTarget = z.infer<typeof iPhaserFilePackGenericAssetSchema>
+    type IMetaFilePack = z.infer<typeof iPhaserFilePackFilesSchema>
 
-const args = process.argv
+    const args = process.argv
 
 if (2 === args.length) {
     console.error("Must specify a configuration file!")
@@ -83,45 +77,47 @@ const filePack = {
 } as FilePack
 
 
-// copilot assisted
+// copilot assisted function
 function collapseArraySubset(arr: IFilePackTarget[]) {
     const result = [];
     const map = new Map();
-
     for (const obj of arr) {
-        if(['text','image'].includes(obj.type)) {
-            map.set(obj.key, { ...obj, url: obj.url})
-            continue
-        }
-        
         const key = obj.key + obj.type;
         if (map.has(key)) {
             const existingObj = map.get(key);
-            existingObj.url.push(obj.url);
+            if (obj?.focalKey) {
+                existingObj[obj.focalKey].push(obj[obj.focalKey])
+            } else {
+                map.set(key, {...obj, ...existingObj})
+            }
         } else {
-            console.log(key)
-            map.set(key, { ...obj, url: [obj.url] });
+            if (obj?.focalKey) {
+                map.set(key, { ...obj, [obj.focalKey]: [obj[obj.focalKey]] });
+            } else {
+                map.set(key, { ...obj});
+            }
         }
     }
 
     for (const obj of map.values()) {
         result.push(obj);
     }
-
     return result;
 }
 
-function handleComplexityOne() {
-    // for all assets loaded with key,url,type
-}
 
+
+// represent filesystem structure in JS object
 function buildIt(target: IAssetTarget, re: RegExp|undefined) {
     let reFinal = re
     if ("string" === typeof target.extensions) {
         reFinal = str2re(target.extensions)
     }
 
-    const ignoredPaths: RegExp|RegExp[] = []
+    const ignoredPaths: RegExp|RegExp[] = [
+        /\.DS_Store/i,
+        /\.Thumbs.db/i
+    ]
 
     if (Array.isArray(target.ignoredPaths)) {
         target.ignoredPaths.forEach(item => ignoredPaths.push(new RegExp(item)))
@@ -137,52 +133,13 @@ function buildIt(target: IAssetTarget, re: RegExp|undefined) {
             exclude: ignoredPaths
 
         },
-        (item, PATH) => {
-            const fileparts = path.parse(PATH)
-            const ns = path.basename(target.basePath)
-
-            const key = `${ns}/${fileparts.name}`
-
-
-            Object.assign(item, {key})
-
-            // @ts-ignore
-            delete item.name
-            // console.llog(item.name)
-
-            // imagine a filter the moves to new object
-
-
-            if (null != target.hint) {
-                Object.assign(item, {type: target.hint})
-            } else if (isImage(PATH)) {
-                Object.assign(item, {type:"image"})
-            } else if (isAudio(PATH)) {
-                Object.assign(item, {type: "audio"})
-            } else if (isCSS(PATH)) {
-                Object.assign(item, {type: "css"})
-            } else if (isText(PATH)) {
-                Object.assign(item, {type: "text"})
+        (item, _PATH) => {
+//            console.log(target)
+            if (target.hint) {
+                proxyHandler(item, target, target.hint)
             } else {
-                Object.assign(item, {type: "unknown"})
+                guessWhichProcessor(item, target)
             }
-
-
-            // @ts-ignore
-            if ("bitmapFont" == item.type) {
-                if (isXML(PATH)) {
-                    Object.assign(item, {fontDataURL: item.path})
-                }               // 17
-                if (isImage(PATH)) {
-                    Object.assign(item, {textureURL: item.path})
-                }
-            } else {
-                Object.assign(item, {url: item.path})
-            }
-
-            // might need to keep item.path
-            // @ts-ignore
-            delete item.path
 
             if (!filePack.hasOwnProperty(target.key)) {
                 Object.assign(filePack, {
@@ -191,10 +148,11 @@ function buildIt(target: IAssetTarget, re: RegExp|undefined) {
                     }
                 })
             }
-            Reflect.get(filePack, target.key).files.push(item)
-        }
-    )
+
+            Reflect.get(filePack, target.key).files.push(item as unknown as IPhaserFilePackAsset)
+        })
 }
+
 
 targets.forEach(target => {
     try {
@@ -208,6 +166,7 @@ targets.forEach(target => {
     }
 })
 
+// add some metadata to final product
 Object.assign<FilePack, any>(filePack, {
     meta: {
         "generated": Date.now()
@@ -216,16 +175,28 @@ Object.assign<FilePack, any>(filePack, {
 
 
 // @ts-ignore
-for (const [_k, v] of Object.entries<IMetaFilePack>(filePack)) {
-    if (null == v.files) continue
+for (const [_filePackKey, fileSet] of Object.entries<IMetaFilePack>(filePack)) {
+    if (null == fileSet.files) continue
 
-    Object.assign(v, {
-        files: collapseArraySubset(v.files)
+    const is_collapsible = fileSet.files.some(file => {
+        return null != file.type && isCollapsibleType(file.type)
     })
+
+    if (true === is_collapsible) {
+        Object.assign(fileSet, {
+            files: collapseArraySubset(fileSet.files)
+        })
+        continue
+    }
+
+    Object.assign(fileSet, {
+        files: fileSet.files
+    })
+
 }                               // 9
 
 
-console.log(JSON.stringify(filePack, null, 2))
+
 
 // for (const [k, v] of Object.entries(filePack)) {
 //     if (null == v.files) continue
@@ -249,3 +220,8 @@ console.log(JSON.stringify(filePack, null, 2))
 //         console.groupEnd()
 //     }
 // }
+
+
+
+
+console.log(JSON.stringify(filePack, null, 2))

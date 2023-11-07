@@ -1,8 +1,9 @@
 {
     "targets": [
         {
-            "key": "lol",
-            "basePath": "./assets/game-objects"
+            "key": "myfonts",
+            "basePath": "./assets/fonts",
+            "hint": "bitmapFont"
         }
     ]
 }

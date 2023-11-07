@@ -29,8 +29,23 @@ export const iPhaserFilePackGenericAssetSchema = z.object({
   url: z.union([z.string(), z.array(z.string())]),
 });
 
+const uint8ArraySchema = z.object({
+  " buffer_kind": z.literal("uint8").optional(),
+});
+
+export const iPhaserFilePackBinaryAssetSchema = z.object({
+  type: z.string(),
+  key: z.string(),
+  url: z.string(),
+  dataType: uint8ArraySchema,
+});
+
+export const iPhaserFilePackAssetSchema = iPhaserFilePackGenericAssetSchema.and(
+  iPhaserFilePackBinaryAssetSchema
+);
+
 export const iPhaserFilePackFilesSchema = z.object({
-  files: z.array(iPhaserFilePackGenericAssetSchema),
+  files: z.array(iPhaserFilePackAssetSchema),
 });
 
 export const filePackSchema = z

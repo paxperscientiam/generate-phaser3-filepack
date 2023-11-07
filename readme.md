@@ -42,20 +42,46 @@ npx  @paxperscientiam/generate-phaser3-filepack <configfile.json>
 
 
 ## Notes
-- this script does NOT write anything to file; it's up to you to do so.
+This script does NOT write anything to file; it's up to you to do so.
+
+Is you set a "hint", it's assumed accurate.
+
 
 
 ### Auto inferred types
-- [x] image (:IPhaserFilePackGenericAsset)
-- [x] audio (:IPhaserFilePackGenericAsset)
-- [x] css
-- [ ] binary (:IPhaserFilePackBinaryAsset)
+- [ ] atlas
+- [ ] atlasXML
+- [ ] audioSprite
+- [ ] binary
+- [ ] bitmapFont
+- [ ] glsl
 - [ ] html
+- [ ] htmlTexture
 - [ ] json
+- [ ] multiatlas
+- [ ] obj
+- [ ] spritesheet
 - [ ] svg
-- [ ] txt
+- [ ] tilemapCSV
+- [ ] tilemapImpact
+- [ ] tilemapTiledJSON
+- [ ] unityAtlas
+- [ ] video
+- [ ] xml
+- [x] audio (:IPhaserFilePackGenericAsset)
+- [x] binary (:IPhaserFilePackBinaryAsset)
+- [x] css
+- [x] image (:IPhaserFilePackGenericAsset)
+- [x] text
 
 
+
+### Various checks
+- [ ] add check to prevent changing keys of unmoved files
+- [ ] filter out commonsystem and temp files. EG .DS_Store 
+
+### Fixes
+- [ ] only selectively collapse asset set (EG: collapse sounds, but not toher types with files with same file-basenames)
 
 ## Contributors
 - All the programmers Copilot ripped off
