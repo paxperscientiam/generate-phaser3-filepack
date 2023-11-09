@@ -1,6 +1,19 @@
 {
     "targets": [
         {
+            "key": "lol",
+            "basePath": "./assets/",
+            "ignoredPaths": [
+                "/fonts",
+                "/json"
+            ]
+        },
+        {
+            "key": "dataforms",
+            "basePath": "./assets/json",
+            "hint": "image"
+        },
+        {
             "key": "myfonts",
             "basePath": "./assets/fonts",
             "hint": "bitmapFont"

@@ -86,7 +86,7 @@ function collapseArraySubset(arr: IFilePackTarget[]) {
         if (map.has(key)) {
             const existingObj = map.get(key);
             if (obj?.focalKey) {
-                existingObj[obj.focalKey].push(obj[obj.focalKey])
+                existingObj[obj.focalKey].push(Reflect.get(obj, obj.focalKey))
             } else {
                 map.set(key, {...obj, ...existingObj})
             }
@@ -157,7 +157,7 @@ function buildIt(target: IAssetTarget, re: RegExp|undefined) {
 targets.forEach(target => {
     try {
         if (!fs.existsSync(target.basePath)) {
-            throw `The target directory does not exist: ${target.basePath}`
+            throw `This target directory does not exist: "${target.basePath}". Correct this, then try again.`
         }
         buildIt(target, defaultRegex)
     } catch (err) {

@@ -2,6 +2,8 @@
 import { z } from "zod";
 
 export const iConfigAssetTargetSchema = z.object({
+  key: z.string(),
+  basePath: z.string(),
   hint: z
     .union([
       z.literal("audio"),
@@ -12,8 +14,6 @@ export const iConfigAssetTargetSchema = z.object({
       z.string(),
     ])
     .optional(),
-  key: z.string(),
-  basePath: z.string(),
   extensions: z.string().optional(),
   ignoredPaths: z.union([z.string(), z.array(z.string())]).optional(),
 });
@@ -27,22 +27,31 @@ export const iPhaserFilePackGenericAssetSchema = z.object({
   type: z.string(),
   key: z.string(),
   url: z.union([z.string(), z.array(z.string())]),
+  focalKey: z.string().optional(),
 });
 
 const uint8ArraySchema = z.object({
   " buffer_kind": z.literal("uint8").optional(),
 });
 
+export const iPhaserFilePackVideoAssetSchema = z.object({
+  type: z.literal("video"),
+  asBlob: z.boolean().optional(),
+  noAudio: z.boolean().optional(),
+  key: z.string(),
+  url: z.union([z.string(), z.array(z.string())]),
+});
+
 export const iPhaserFilePackBinaryAssetSchema = z.object({
-  type: z.string(),
+  type: z.literal("binary"),
   key: z.string(),
   url: z.string(),
   dataType: uint8ArraySchema,
 });
 
-export const iPhaserFilePackAssetSchema = iPhaserFilePackGenericAssetSchema.and(
-  iPhaserFilePackBinaryAssetSchema
-);
+export const iPhaserFilePackAssetSchema = iPhaserFilePackGenericAssetSchema
+  .and(iPhaserFilePackBinaryAssetSchema)
+  .and(iPhaserFilePackVideoAssetSchema);
 
 export const iPhaserFilePackFilesSchema = z.object({
   files: z.array(iPhaserFilePackAssetSchema),

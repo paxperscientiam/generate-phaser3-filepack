@@ -2,9 +2,9 @@
    @toExtract
  */
 export interface IConfigAssetTarget {
-    hint?: "audio"|"image"|"bitmapFont"|"binary"|"css"|string
     key: string
     basePath: string
+    hint?: "audio"|"image"|"bitmapFont"|"binary"|"css"|string
     extensions?: string
     ignoredPaths?: string|string[]
 }
@@ -26,6 +26,7 @@ export type IPhaserFilePackGenericAsset = {
     type: string
     key: string
     url: string | string[]
+    focalKey?: string
 }
 
 
@@ -37,17 +38,28 @@ interface Uint8Array {
  * @toExtract
  */
 export type IPhaserFilePackBinaryAsset = {
-    type: string
+    type: "binary"
     key: string
     url: string
     dataType: Uint8Array
+}
+
+/**
+ * @toExtract
+ */
+export type IPhaserFilePackVideoAsset = {
+    type: "video"
+    asBlob?: boolean
+    noAudio?: boolean
+    key: string
+    url: string | string[]
 }
 
 
 /**
  * @toExtract
  */
-export type IPhaserFilePackAsset = IPhaserFilePackGenericAsset & IPhaserFilePackBinaryAsset
+export type IPhaserFilePackAsset = IPhaserFilePackGenericAsset & IPhaserFilePackBinaryAsset & IPhaserFilePackVideoAsset
 
 /**
  * @toExtract

@@ -19,6 +19,10 @@ export function isCollapsibleType(type: string): boolean {
     ].includes(type)
 }
 
+export function isJSON(filepath:string) {
+    return 'json' == path.parse(filepath).ext.replace(/^\./, '')
+}
+
 export function isCSS(filepath: string) {
     const ext = path.parse(filepath).ext.replace(/^\./, '')
     return "css" === ext
@@ -34,6 +38,10 @@ export function isText(filepath:string) {
 
 export function isSVG(filepath:string) {
     return 'svg' == path.parse(filepath).ext.replace(/^\./, '')
+}
+
+export function isHTML(filepath:string) {
+    return 'html' == path.parse(filepath).ext.replace(/^\./, '')
 }
 
 export function isAudio(filepath: string) {

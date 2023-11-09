@@ -52,36 +52,51 @@ Is you set a "hint", it's assumed accurate.
 - [ ] atlas
 - [ ] atlasXML
 - [ ] audioSprite
-- [ ] binary
-- [ ] bitmapFont
 - [ ] glsl
-- [ ] html
 - [ ] htmlTexture
-- [ ] json
 - [ ] multiatlas
 - [ ] obj
 - [ ] spritesheet
-- [ ] svg
 - [ ] tilemapCSV
 - [ ] tilemapImpact
 - [ ] tilemapTiledJSON
 - [ ] unityAtlas
 - [ ] video
-- [ ] xml
 - [x] audio (:IPhaserFilePackGenericAsset)
 - [x] binary (:IPhaserFilePackBinaryAsset)
 - [x] css
+- [x] html
 - [x] image (:IPhaserFilePackGenericAsset)
+- [x] json
+- [x] svg
 - [x] text
+- [x] xml
 
 
+### Hint-reliant types
+- [x] bitmapFont
+- [x] css
+- [x] html
+- [x] json
+- [x] svg
+- [x] text
+- [x] xml
 
-### Various checks
+
+### Improvements
 - [ ] add check to prevent changing keys of unmoved files
-- [ ] filter out commonsystem and temp files. EG .DS_Store 
+- [x] filter out commonsystem and temp files. EG .DS_Store 
+- [ ] post process adjustments.
+  - [ ] allow set `asBlob` and `noAudio` in post-processing.
+- [ ] use phaser's type for development testing
 
-### Fixes
-- [ ] only selectively collapse asset set (EG: collapse sounds, but not toher types with files with same file-basenames)
+
+### Bugs
+- [x] only selectively collapse asset set (EG: collapse audio, but not toher types with files with same file-basenames)
+- [ ] filter out unknowns explicitly
+- [ ] review warnings about key uniqueness. EG [this on videos](https://newdocs.phaser.io/docs/3.54.0/Phaser.Loader.LoaderPlugin#video).
+
+
 
 ## Contributors
 - All the programmers Copilot ripped off
