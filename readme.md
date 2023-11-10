@@ -85,6 +85,7 @@ Is you set a "hint", it's assumed accurate.
 
 
 ### Improvements
+- [ ] add mode to merge new with pre-existing 
 - [ ] add check to prevent changing keys of unmoved files
 - [x] filter out commonsystem and temp files. EG .DS_Store 
 - [ ] post process adjustments.
