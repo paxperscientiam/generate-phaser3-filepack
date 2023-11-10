@@ -5,8 +5,14 @@
             "basePath": "./assets/",
             "ignoredPaths": [
                 "/fonts",
-                "/json"
+                "/json",
+                "/atlas"
             ]
+        },
+        {
+            "key": "dats",
+            "basePath": "./assets/atlas",
+            "hint": "atlas"
         },
         {
             "key": "dataforms",

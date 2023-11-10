@@ -61,7 +61,7 @@ Is you set a "hint", it's assumed accurate.
 - [ ] tilemapImpact
 - [ ] tilemapTiledJSON
 - [ ] unityAtlas
-- [ ] video
+- [x] video
 - [x] audio (:IPhaserFilePackGenericAsset)
 - [x] binary (:IPhaserFilePackBinaryAsset)
 - [x] css
@@ -74,6 +74,7 @@ Is you set a "hint", it's assumed accurate.
 
 
 ### Hint-reliant types
+- [x] atlas
 - [x] bitmapFont
 - [x] css
 - [x] html

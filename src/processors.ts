@@ -98,6 +98,16 @@ function xmlProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
+function glslProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+    genericProcessor(item, target)
+    Object.assign(item, {type: "glsl"})
+    Object.assign(item, {shaderType: "fragment"})
+    Object.assign(item, {url: item.path})
+    // @ts-ignore
+    delete item.path
+    return item
+}
+
 
 function videoProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     genericProcessor(item, target)
@@ -114,8 +124,24 @@ function bitmapFontProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     Object.assign(item, {type: "bitmapFont"})
 
     if (isXML(item.path)) {
-        console.log('bmfxml')
         Object.assign(item, {fontDataURL: item.path})
+    }
+
+    if (isImage(item.path)) {
+        Object.assign(item, {textureURL: item.path})
+    }
+
+    // @ts-ignore
+    delete item.path
+    return item
+}
+
+function atlasProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+    genericProcessor(item, target)
+    Object.assign(item, {type: "atlas"})
+
+    if (isJSON(item.path)) {
+        Object.assign(item, {atlasURL: item.path})
     }
 
     if (isImage(item.path)) {
@@ -173,6 +199,10 @@ export function proxyHandler(item: DirTreeRecord, target: IConfigAssetTarget, hi
             return imageProcessor(item, target)
         case "xml":
             return xmlProcessor(item, target)
+        case "atlas":
+            return atlasProcessor(item, target)
+        case "glsl":
+            return glslProcessor(item, target)
         case undefined:
             return noopProcessor(item)
         default:

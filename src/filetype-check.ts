@@ -9,13 +9,15 @@ export function mapExtensionToType(filepath: string) {
         json: "json",
         svg: "svg",
         txt: "text",
+        glsl: "glsl",
     }, ext)
 }
 
 export function isCollapsibleType(type: string): boolean {
     return [
         "audio",
-        "bitmapFont"
+        "bitmapFont",
+        "atlas"
     ].includes(type)
 }
 
