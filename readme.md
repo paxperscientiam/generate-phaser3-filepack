@@ -52,7 +52,6 @@ Is you set a "hint", it's assumed accurate.
 - [ ] atlas
 - [ ] atlasXML
 - [ ] audioSprite
-- [ ] glsl
 - [ ] htmlTexture
 - [ ] multiatlas
 - [ ] obj
@@ -61,15 +60,16 @@ Is you set a "hint", it's assumed accurate.
 - [ ] tilemapImpact
 - [ ] tilemapTiledJSON
 - [ ] unityAtlas
-- [x] video
 - [x] audio (:IPhaserFilePackGenericAsset)
 - [x] binary (:IPhaserFilePackBinaryAsset)
 - [x] css
+- [x] glsl
 - [x] html
 - [x] image (:IPhaserFilePackGenericAsset)
 - [x] json
 - [x] svg
 - [x] text
+- [x] video
 - [x] xml
 
 
