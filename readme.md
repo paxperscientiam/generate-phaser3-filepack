@@ -19,10 +19,11 @@ This script requires a configuration file following the following structure:
   "extensions?": string // optional comma-separated list of allowed file extensions, default action is not to filter by extension
   "targets": [
     {
-      "hint"?: ["audio"|"image"|"bitmapFont"] // optionally assert asset type
       "key": string // unique key to describe set of targeted files
       "basePath": string // which directory to search
-      "extensions": string // comma separated list of allowed file extensions, takes precedence over higher-level definition
+      "hint"?: ["audio"|"image"|"bitmapFont"] // optionally assert asset type
+      "extensions"?: string // comma separated list of allowed file extensions, takes precedence over higher-level definition
+      "ignoredPaths"?: RegExp|RegExp[]
     },
     {
      // additional targets
