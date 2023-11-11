@@ -14,8 +14,11 @@ export interface IConfigAssetTarget {
  * @toExtract
  */
 export interface IConfig {
-    extensions?: string
     targets: IConfigAssetTarget[]
+    extensions?: string
+    options?: {
+        keyFormat?: "namespaced"|"filebasename"
+    }
 }
 
 
@@ -31,7 +34,7 @@ export type IPhaserFilePackGenericAsset = {
 
 
 interface Uint8Array {
-    " buffer_kind"?: "uint8"; 
+    " buffer_kind"?: "uint8";
 }
 
 /**
@@ -78,3 +81,11 @@ export type FilePack = {
 } & {
     [prop:string]: IPhaserFilePackFiles
 }
+
+
+declare global {
+    var configData: IConfig
+}
+
+
+

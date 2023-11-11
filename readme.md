@@ -2,7 +2,7 @@
 ---
 
 ## WARNING
-This is still a work in progress. Until complete, it will not write a file; however, you can pipe the output to a file.
+This is still a work in progress. Until complete, it will not write a file; however, you can pipe the output to a file. Contributions welcome!
 
 
 
@@ -16,7 +16,10 @@ Generates a Pack File based on organization of asset files, using a configuratio
 This script requires a configuration file following the following structure:
 ```json
 {
-  "extensions?": string // optional comma-separated list of allowed file extensions, default action is not to filter by extension
+  "extensions"?: string // optional comma-separated list of allowed file extensions, default action is not to filter by extension
+  "options":? {
+    "keyFormat"?: "namespaced"|"filebasename" 
+  },
   "targets": [
     {
       "key": string // unique key to describe set of targeted files
@@ -45,7 +48,7 @@ npx  @paxperscientiam/generate-phaser3-filepack <configfile.json>
 ## Notes
 This script does NOT write anything to file; it's up to you to do so.
 
-Is you set a "hint", it's assumed accurate.
+If you set a "hint", it's assumed accurate. 
 
 
 
@@ -77,12 +80,6 @@ Is you set a "hint", it's assumed accurate.
 ### Hint-reliant types
 - [x] atlas
 - [x] bitmapFont
-- [x] css
-- [x] html
-- [x] json
-- [x] svg
-- [x] text
-- [x] xml
 
 
 ### Improvements

@@ -1,4 +1,7 @@
 {
+    "options": {
+        "keyFormat": "filebasename"
+    },
     "targets": [
         {
             "key": "lol",

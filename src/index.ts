@@ -40,11 +40,9 @@ if (2 === args.length) {
 
 const configFile = args[2]
 
-let configData: IConfig
-
 try {
     const buffer = fs.readFileSync(configFile, {})
-    configData = JSON.parse(buffer.toString())
+    global.configData = JSON.parse(buffer.toString())
     iConfigSchema.parse(configData)
 } catch (e) {
     console.error(e)
@@ -225,3 +223,4 @@ for (const [_filePackKey, fileSet] of Object.entries<IMetaFilePack>(filePack)) {
 
 
 console.log(JSON.stringify(filePack, null, 2))
+

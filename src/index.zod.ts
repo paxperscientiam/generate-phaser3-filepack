@@ -19,8 +19,15 @@ export const iConfigAssetTargetSchema = z.object({
 });
 
 export const iConfigSchema = z.object({
-  extensions: z.string().optional(),
   targets: z.array(iConfigAssetTargetSchema),
+  extensions: z.string().optional(),
+  options: z
+    .object({
+      keyFormat: z
+        .union([z.literal("namespaced"), z.literal("filebasename")])
+        .optional(),
+    })
+    .optional(),
 });
 
 export const iPhaserFilePackGenericAssetSchema = z.object({

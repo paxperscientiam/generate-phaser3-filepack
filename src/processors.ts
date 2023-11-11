@@ -7,13 +7,21 @@ import path from "path"
 // @ts-ignore
 import isVideo from 'is-video'
 
+
 type DirTreeRecord = DirectoryTree<Record<string,any>>
 
 function genericProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+    let key: string
+    const globalOptions = global.configData.options
     const fileparts = path.parse(item.path)
     const ns = path.basename(target.basePath)
 
-    const key = `${ns}/${fileparts.name}`
+    if ("filebasename" === globalOptions?.keyFormat) {
+        key = fileparts.name
+    } else {
+        key = `${ns}/${fileparts.name}`
+    }
+
     Object.assign(item, {key})
     // @ts-ignore
     delete item.name
