@@ -35,7 +35,6 @@ export const iPhaserFilePackGenericAssetSchema = z.object({
   type: z.string(),
   key: z.string(),
   url: z.union([z.string(), z.array(z.string())]),
-  focalKey: z.string().optional(),
 });
 
 const uint8ArraySchema = z.object({
@@ -57,9 +56,18 @@ export const iPhaserFilePackBinaryAssetSchema = z.object({
   dataType: uint8ArraySchema,
 });
 
-export const iPhaserFilePackAssetSchema = iPhaserFilePackGenericAssetSchema
-  .and(iPhaserFilePackBinaryAssetSchema)
-  .and(iPhaserFilePackVideoAssetSchema);
+export const iPhaserFilePackAssetSchema = z
+  .union([
+    iPhaserFilePackGenericAssetSchema,
+    iPhaserFilePackBinaryAssetSchema,
+    iPhaserFilePackVideoAssetSchema,
+  ])
+  .and(
+    z.object({
+      isDirty: z.boolean().optional(),
+      focalKey: z.string().optional(),
+    })
+  );
 
 export const iPhaserFilePackFilesSchema = z.object({
   files: z.array(iPhaserFilePackAssetSchema),
@@ -67,6 +75,7 @@ export const iPhaserFilePackFilesSchema = z.object({
 
 export const filePackSchema = z
   .object({
+    unknowns: z.array(z.string()),
     meta: z.object({
       generated: z.number(),
     }),

@@ -30,7 +30,6 @@ export type IPhaserFilePackGenericAsset = {
     type: string
     key: string
     url: string | string[]
-    focalKey?: string
 }
 
 
@@ -63,7 +62,7 @@ export type IPhaserFilePackVideoAsset = {
 /**
  * @toExtract
  */
-export type IPhaserFilePackAsset = IPhaserFilePackGenericAsset & IPhaserFilePackBinaryAsset & IPhaserFilePackVideoAsset
+export type IPhaserFilePackAsset = (IPhaserFilePackGenericAsset | IPhaserFilePackBinaryAsset | IPhaserFilePackVideoAsset) & {isDirty?:boolean, focalKey?:string}
 
 /**
  * @toExtract
@@ -76,6 +75,7 @@ export type IPhaserFilePackFiles = {
  * @toExtract
  */
 export type FilePack = {
+    unknowns: string[]
     meta: {
         generated: number
     }
@@ -83,10 +83,6 @@ export type FilePack = {
     [prop:string]: IPhaserFilePackFiles
 }
 
-
 declare global {
     var configData: IConfig
 }
-
-
-

@@ -9,29 +9,19 @@
 
 import dirTree from "directory-tree"
 import fs from 'fs'
-import path from 'path'
 
 import type  {
-    FilePack, IPhaserFilePackAsset
+    FilePack, IConfigAssetTarget, IPhaserFilePackAsset, IPhaserFilePackFiles
 } from "index.d"
 
 import {
     iConfigSchema,
-    iConfigAssetTargetSchema,
-    iPhaserFilePackGenericAssetSchema,
-    iPhaserFilePackFilesSchema
 } from "index.zod"
 
-import { z } from "zod"
 import { guessWhichProcessor, proxyHandler } from "processors"
 import { isCollapsibleType } from "filetype-check"
 
-type IConfig = z.infer<typeof iConfigSchema>
-    type IAssetTarget = z.infer<typeof iConfigAssetTargetSchema>
-    type IFilePackTarget = z.infer<typeof iPhaserFilePackGenericAssetSchema>
-    type IMetaFilePack = z.infer<typeof iPhaserFilePackFilesSchema>
-
-    const args = process.argv
+const args = process.argv
 
 if (2 === args.length) {
     console.error("Must specify a configuration file!")
@@ -77,7 +67,7 @@ const filePack = {
 const files: string[] = []
 
 // copilot assisted function
-function collapseArraySubset(arr: IFilePackTarget[]) {
+function collapseArraySubset(arr: IPhaserFilePackAsset[]) {
     const result = [];
     const map = new Map();
     for (const obj of arr) {
@@ -91,7 +81,7 @@ function collapseArraySubset(arr: IFilePackTarget[]) {
             }
         } else {
             if (obj?.focalKey) {
-                map.set(key, { ...obj, [obj.focalKey]: [obj[obj.focalKey]] });
+                map.set(key, { ...obj, [obj.focalKey]: [obj[obj.focalKey as keyof IPhaserFilePackAsset]] });
             } else {
                 map.set(key, { ...obj});
             }
@@ -105,7 +95,7 @@ function collapseArraySubset(arr: IFilePackTarget[]) {
 }
 
 // represent filesystem structure in JS object
-function buildIt(target: IAssetTarget, re: RegExp|undefined) {
+function buildIt(target: IConfigAssetTarget, re: RegExp|undefined) {
     let reFinal = re
     if ("string" === typeof target.extensions) {
         reFinal = str2re(target.extensions)
@@ -149,9 +139,21 @@ function buildIt(target: IAssetTarget, re: RegExp|undefined) {
                 })
             }
 
+            if ("unknown" === item.type as unknown as string) {
+                filePack.unknowns.push(item.path)
+            }
+
             Reflect.get(filePack, target.key).files.push(item as unknown as IPhaserFilePackAsset)
         })
 }
+
+// add some metadata to final product
+Object.assign<FilePack, any>(filePack, {
+    meta: {
+        "generated": Date.now()
+    },
+    unknowns: []
+})
 
 targets.forEach(target => {
     try {
@@ -165,16 +167,7 @@ targets.forEach(target => {
     }
 })
 
-// add some metadata to final product
-Object.assign<FilePack, any>(filePack, {
-    meta: {
-        "generated": Date.now()
-    }
-})
-
-
-// @ts-ignore
-for (const [_filePackKey, fileSet] of Object.entries<IMetaFilePack>(filePack)) {
+for (const [_filePackKey, fileSet] of Object.entries<IPhaserFilePackFiles>(filePack)) {
     if (null == fileSet.files) continue
 
     const is_collapsible = fileSet.files.some(file => {
@@ -186,7 +179,7 @@ for (const [_filePackKey, fileSet] of Object.entries<IMetaFilePack>(filePack)) {
             files: collapseArraySubset(fileSet.files)
         })
         continue
-    }
+    }                           // ;8M58[<64]
 
     Object.assign(fileSet, {
         files: fileSet.files
@@ -194,8 +187,13 @@ for (const [_filePackKey, fileSet] of Object.entries<IMetaFilePack>(filePack)) {
 
 }                               // 9
 
-
-
+// clean
+for (const [_filePackKey, fileSet] of Object.entries<IPhaserFilePackFiles>(filePack)) {
+    fileSet?.files?.forEach(file => {
+        delete file.isDirty
+        delete file.focalKey
+    })
+}
 
 // for (const [k, v] of Object.entries(filePack)) {
 //     if (null == v.files) continue

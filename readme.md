@@ -2,11 +2,12 @@
 ------
 
 ## WARNING
-This is still a work in progress. Until complete, it will not write a file; however, you can pipe the output to a file. Contributions welcome!
+This project is still a work in progress. I have intentionally designed this script to not write a file. Users can produce a file through output re-direction.
 
 
+## What is this?
+This script serves Phaser 3 developers who manage their assets with Phaser's PackFile loader. It's meant to take the load off of manually maintaining a PackFile, which becomes tedious once one is dealing with lots of assets. The product of this script is meant to adhere to the form defined in [framework definition](https://newdocs.phaser.io/docs/3.60.0/focus/Phaser.Loader.LoaderPlugin-pack).
 
-This script generates a File Pack in JSON form according to the [framework definition](https://newdocs.phaser.io/docs/3.60.0/focus/Phaser.Loader.LoaderPlugin-pack).
 
 ## Features
 Generates a Pack File based on organization of asset files, using a configuration file to shape output.
@@ -46,7 +47,11 @@ For assets that are not automatically inferred, you'll probably want to take adv
 npx  @paxperscientiam/generate-phaser3-filepack <configfile.json>
 
 ```
+Example of invocation and saving (careful not overwrite unintentionally):
+```shell
+npx  @paxperscientiam/generate-phaser3-filepack config.json > filepack.json
 
+```
 
 
 ## Notes
@@ -92,7 +97,7 @@ If you set a "hint", it's assumed accurate.
 - [ ] add mode to merge new with pre-existing 
 - [ ] isolate unknow file types
 - [ ] post process adjustments.
-- [ ] use phaser's type for development testing
+- [ ] use phaser's types for development
 - [x] avoid double processing. This can be done with combination of dirty flags and collative full file list. Or, maybe make a dictionary of all paths, using dirTree in a prior step for that purpose
 - [x] filter out commonsystem and temp files. EG .DS_Store 
 

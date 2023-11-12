@@ -199,7 +199,7 @@ export function guessWhichProcessor(item: DirTreeRecord, target: IConfigAssetTar
 
 export function proxyHandler(item: DirTreeRecord, target: IConfigAssetTarget, hint: string|undefined = undefined) {
     if (false === Reflect.has(item, "isDirty")) {
-        console.log('processessed already')
+        console.log('processessed, or processing, already')
         return noopProcessor(item)
     }
 
