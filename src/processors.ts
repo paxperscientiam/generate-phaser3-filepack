@@ -25,6 +25,8 @@ function genericProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     Object.assign(item, {key})
     // @ts-ignore
     delete item.name
+
+    
     return item
 }
 
@@ -64,8 +66,12 @@ function imageProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-export function noopProcessor(item: DirTreeRecord): DirTreeRecord {
+export function unknownProcessor(item: DirTreeRecord): DirTreeRecord {
     Object.assign(item, {type: "unknown"})
+    return item
+}
+
+export function noopProcessor(item: DirTreeRecord): DirTreeRecord {
     return item
 }
 
@@ -141,6 +147,9 @@ function bitmapFontProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
 
     // @ts-ignore
     delete item.path
+
+    Object.assign(item, {isDirty: false})
+
     return item
 }
 
@@ -189,7 +198,11 @@ export function guessWhichProcessor(item: DirTreeRecord, target: IConfigAssetTar
 }
 
 export function proxyHandler(item: DirTreeRecord, target: IConfigAssetTarget, hint: string|undefined = undefined) {
-    //console.log(hint)
+    if (false === Reflect.has(item, "isDirty")) {
+        console.log('processessed already')
+        return noopProcessor(item)
+    }
+
     switch (hint) {
         case "text":
             return textProcessor(item, target)
@@ -212,9 +225,9 @@ export function proxyHandler(item: DirTreeRecord, target: IConfigAssetTarget, hi
         case "glsl":
             return glslProcessor(item, target)
         case undefined:
-            return noopProcessor(item)
+            return unknownProcessor(item)
         default:
             console.warn(`The hint value "${hint}" is unrecognized. Ignoring.`)
-            return noopProcessor(item)
+            return unknownProcessor(item)
     }
 }

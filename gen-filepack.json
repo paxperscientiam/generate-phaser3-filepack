@@ -4,28 +4,18 @@
     },
     "targets": [
         {
-            "key": "lol",
-            "basePath": "./assets/",
-            "ignoredPaths": [
-                "/fonts",
-                "/json",
-                "/atlas"
-            ]
+            "key": "myfonts",
+            "basePath": "./assets/fonts",
+            "hint": "bitmapFont"
         },
         {
-            "key": "dats",
+            "key": "atlas1",
             "basePath": "./assets/atlas",
             "hint": "atlas"
         },
         {
-            "key": "dataforms",
-            "basePath": "./assets/json",
-            "hint": "image"
-        },
-        {
-            "key": "myfonts",
-            "basePath": "./assets/fonts",
-            "hint": "bitmapFont"
+            "key": "lol",
+            "basePath": "./assets/"
         }
     ]
 }

@@ -7,7 +7,7 @@
         "url": "https://github.com/paxperscientiam/generate-phaser3-filepack.git"
     },
     "scripts": {
-        "build": "ts-to-zod && tsup --cjsInterop",
+        "build": "ts-to-zod && tsup --cjsInterop --minify --treeshake",
         "dev": "tsup --cjsInterop --watch",
         "test": "node ./dist/index.mjs gen-filepack.json",
         "prepack": "pnpm run build"

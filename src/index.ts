@@ -74,6 +74,7 @@ if (null == configData.extensions) {
 const filePack = {
 } as FilePack
 
+const files: string[] = []
 
 // copilot assisted function
 function collapseArraySubset(arr: IFilePackTarget[]) {
@@ -103,8 +104,6 @@ function collapseArraySubset(arr: IFilePackTarget[]) {
     return result;
 }
 
-
-
 // represent filesystem structure in JS object
 function buildIt(target: IAssetTarget, re: RegExp|undefined) {
     let reFinal = re
@@ -132,7 +131,10 @@ function buildIt(target: IAssetTarget, re: RegExp|undefined) {
 
         },
         (item, _PATH) => {
-//            console.log(target)
+            if (files.includes(item.path)) return
+            Object.assign(item, {isDirty: true})
+            files.push(item.path)
+
             if (target.hint) {
                 proxyHandler(item, target, target.hint)
             } else {
@@ -150,7 +152,6 @@ function buildIt(target: IAssetTarget, re: RegExp|undefined) {
             Reflect.get(filePack, target.key).files.push(item as unknown as IPhaserFilePackAsset)
         })
 }
-
 
 targets.forEach(target => {
     try {
@@ -218,8 +219,6 @@ for (const [_filePackKey, fileSet] of Object.entries<IMetaFilePack>(filePack)) {
 //         console.groupEnd()
 //     }
 // }
-
-
 
 
 console.log(JSON.stringify(filePack, null, 2))

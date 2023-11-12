@@ -18,6 +18,7 @@ export interface IConfig {
     extensions?: string
     options?: {
         keyFormat?: "namespaced"|"filebasename"
+        outputDuplicateKeyWarning?: boolean
     }
 }
 
