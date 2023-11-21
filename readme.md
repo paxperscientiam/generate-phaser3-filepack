@@ -98,6 +98,7 @@ If you set a "hint", it's assumed accurate.
 - [ ] isolate unknow file types
 - [ ] post process adjustments.
 - [ ] use phaser's types for development
+- [ ] idempotence
 - [x] avoid double processing. This can be done with combination of dirty flags and collative full file list. Or, maybe make a dictionary of all paths, using dirTree in a prior step for that purpose
 - [x] filter out commonsystem and temp files. EG .DS_Store 
 

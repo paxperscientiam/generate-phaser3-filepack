@@ -1,3 +1,4 @@
+
 /**
    @toExtract
  */
@@ -19,6 +20,7 @@ export interface IConfig {
     options?: {
         keyFormat?: "namespaced"|"filebasename"
         outputDuplicateKeyWarning?: boolean
+        applyProAssetKeyPrefix?: boolean
     }
 }
 

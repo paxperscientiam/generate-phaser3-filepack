@@ -1,8 +1,9 @@
 import { DirectoryTree } from "directory-tree"
-import { isAudio, isHTML, isJSON, isSVG, isXML, mapExtensionToType } from "filetype-check"
+import { isAudio, isHTML, isJSON, isSVG, isXML, mapExtensionToType, prefixFromType } from "filetype-check"
 import { IConfigAssetTarget } from "index.d"
 import isImage from "is-image"
 import path from "path"
+
 
 // @ts-ignore
 import isVideo from 'is-video'
@@ -10,13 +11,17 @@ import isVideo from 'is-video'
 
 type DirTreeRecord = DirectoryTree<Record<string,any>>
 
-function genericProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+type DirTreeRecordTweak = DirTreeRecord & {
+    key: string
+}
+
+
+function genericProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     let key: string
-    const globalOptions = global.configData.options
     const fileparts = path.parse(item.path)
     const ns = path.basename(target.basePath)
 
-    if ("filebasename" === globalOptions?.keyFormat) {
+    if ("filebasename" === global.configData?.options?.keyFormat) {
         key = fileparts.name
     } else {
         key = `${ns}/${fileparts.name}`
@@ -26,11 +31,10 @@ function genericProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     // @ts-ignore
     delete item.name
 
-    
     return item
 }
 
-export function textProcessor(item: DirTreeRecord, target: IConfigAssetTarget): DirTreeRecord {
+export function textProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget): DirTreeRecordTweak {
     genericProcessor(item, target)
     Object.assign(item, {type: "text"})
     Object.assign(item, {url: item.path})
@@ -39,7 +43,7 @@ export function textProcessor(item: DirTreeRecord, target: IConfigAssetTarget): 
     return item
 }
 
-export function htmlProcessor(item: DirTreeRecord, target: IConfigAssetTarget): DirTreeRecord {
+export function htmlProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget): DirTreeRecordTweak {
     genericProcessor(item, target)
     Object.assign(item, {type: "html"})
     Object.assign(item, {url: item.path})
@@ -48,7 +52,7 @@ export function htmlProcessor(item: DirTreeRecord, target: IConfigAssetTarget): 
     return item
 }
 
-export function cssProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+export function cssProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "css"})
     Object.assign(item, {url: item.path})
@@ -57,25 +61,30 @@ export function cssProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-function imageProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function imageProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "image"})
     Object.assign(item, {url: item.path})
+
+    if (true === global.configData.options?.applyProAssetKeyPrefix) {
+        prefixFromType(item)
+    }
+    
     // @ts-ignore
     delete item.path
     return item
 }
 
-export function unknownProcessor(item: DirTreeRecord): DirTreeRecord {
+export function unknownProcessor(item: DirTreeRecordTweak): DirTreeRecordTweak {
     Object.assign(item, {type: "unknown"})
     return item
 }
 
-export function noopProcessor(item: DirTreeRecord): DirTreeRecord {
+export function noopProcessor(item: DirTreeRecordTweak): DirTreeRecordTweak {
     return item
 }
 
-function audioProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function audioProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "audio"})
     Object.assign(item, {url: item.path})
@@ -85,7 +94,7 @@ function audioProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-function svgProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function svgProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "svg"})
     Object.assign(item, {url: item.path})
@@ -94,7 +103,7 @@ function svgProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-function jsonProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function jsonProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "json"})
     Object.assign(item, {url: item.path})
@@ -103,7 +112,7 @@ function jsonProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-function xmlProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function xmlProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "xml"})
     Object.assign(item, {url: item.path})
@@ -112,7 +121,7 @@ function xmlProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-function glslProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function glslProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "glsl"})
     Object.assign(item, {shaderType: "fragment"})
@@ -123,7 +132,7 @@ function glslProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
 }
 
 
-function videoProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function videoProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "video"})
     Object.assign(item, {url: item.path})
@@ -133,7 +142,7 @@ function videoProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-function bitmapFontProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function bitmapFontProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "bitmapFont"})
 
@@ -153,7 +162,7 @@ function bitmapFontProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-function atlasProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+function atlasProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     genericProcessor(item, target)
     Object.assign(item, {type: "atlas"})
 
@@ -170,7 +179,7 @@ function atlasProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
     return item
 }
 
-export function guessWhichProcessor(item: DirTreeRecord, target: IConfigAssetTarget) {
+export function guessWhichProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     // note that order matters here
     if (isSVG(item.path)) {
         svgProcessor(item, target)
@@ -197,7 +206,7 @@ export function guessWhichProcessor(item: DirTreeRecord, target: IConfigAssetTar
     }
 }
 
-export function proxyHandler(item: DirTreeRecord, target: IConfigAssetTarget, hint: string|undefined = undefined) {
+export function proxyHandler(item: DirTreeRecordTweak, target: IConfigAssetTarget, hint: string|undefined = undefined) {
     if (false === Reflect.has(item, "isDirty")) {
         console.log('processessed, or processing, already')
         return noopProcessor(item)

@@ -1,4 +1,13 @@
+import { IConfigAssetTarget } from "index"
 import path from "path"
+
+import { DirectoryTree } from "directory-tree"
+
+type DirTreeRecord = DirectoryTree<Record<string,any>>
+type DirTreeRecordTweak = DirTreeRecord & {
+    key: string
+}
+
 
 // if found, then consider a match for genericProccessort
 export function mapExtensionToType(filepath: string) {
@@ -11,6 +20,28 @@ export function mapExtensionToType(filepath: string) {
         txt: "text",
         glsl: "glsl",
     }, ext)
+}
+
+export function prefixFromType(item: DirTreeRecordTweak) {
+    let prefix: string
+    switch (item.type as unknown as IConfigAssetTarget["hint"]) {
+        case "image":
+            prefix = "T_"
+            break
+        case "audio":
+            prefix = "S_"
+            break
+        case "bitmapFont":
+            prefix = "Font_"
+            break
+        default:
+            prefix = ""
+    }
+    console.log(`prefix is ${prefix} for ${item.type}`)
+    Object.assign(item, {
+        key: prefix + item.key
+    })
+
 }
 
 export function isCollapsibleType(type: string): boolean {

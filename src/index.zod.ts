@@ -27,6 +27,7 @@ export const iConfigSchema = z.object({
         .union([z.literal("namespaced"), z.literal("filebasename")])
         .optional(),
       outputDuplicateKeyWarning: z.boolean().optional(),
+      applyProAssetKeyPrefix: z.boolean().optional(),
     })
     .optional(),
 });

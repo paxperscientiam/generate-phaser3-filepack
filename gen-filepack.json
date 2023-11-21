@@ -1,6 +1,7 @@
 {
     "options": {
-        "keyFormat": "filebasename"
+        "keyFormat": "filebasename",
+        "applyProAssetKeyPrefix": true
     },
     "targets": [
         {

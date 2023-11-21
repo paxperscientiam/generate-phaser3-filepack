@@ -179,7 +179,7 @@ for (const [_filePackKey, fileSet] of Object.entries<IPhaserFilePackFiles>(fileP
             files: collapseArraySubset(fileSet.files)
         })
         continue
-    }                           // ;8M58[<64]
+    }
 
     Object.assign(fileSet, {
         files: fileSet.files
