@@ -22,6 +22,7 @@ export interface IConfig {
         keyFormat?: "namespaced"|"filebasename"
         outputDuplicateKeyWarning?: boolean
         applyProAssetKeyPrefix?: boolean
+        removeBaseDirFromURL?: boolean
     }
 }
 

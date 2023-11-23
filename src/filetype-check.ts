@@ -37,7 +37,7 @@ export function prefixFromType(item: DirTreeRecordTweak) {
         default:
             prefix = ""
     }
-    console.log(`prefix is ${prefix} for ${item.type}`)
+    console.debug(`prefix is ${prefix} for ${item.type}`)
     Object.assign(item, {
         key: prefix + item.key
     })

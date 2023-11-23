@@ -29,6 +29,7 @@ export const iConfigSchema = z.object({
         .optional(),
       outputDuplicateKeyWarning: z.boolean().optional(),
       applyProAssetKeyPrefix: z.boolean().optional(),
+      removeBaseDirFromURL: z.boolean().optional(),
     })
     .optional(),
 });

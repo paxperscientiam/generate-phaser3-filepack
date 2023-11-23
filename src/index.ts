@@ -18,6 +18,7 @@ import {
 
 import { guessWhichProcessor, proxyHandler } from "processors"
 import { isCollapsibleType } from "filetype-check"
+import path from "path"
 
 type DirTreeRecord = DirectoryTree<Record<string,any>>
 type DirTreeRecordTweak = DirTreeRecord & {
@@ -127,7 +128,13 @@ function buildIt(target: IConfigAssetTarget, re: RegExp|undefined) {
             exclude: ignoredPaths
 
         },
-        (item, _PATH) => {
+        (item) => {
+            if (true === global.configData.options?.removeBaseDirFromURL) {
+                const pathObject = path.parse(item.path)
+                Object.assign(pathObject, {dir: pathObject.dir.split(path.sep).slice(1)})
+                Object.assign(item, {path: path.format(pathObject)})
+            }
+
             if (files.includes(item.path)) return
             Object.assign(item, {isDirty: true})
             files.push(item.path)

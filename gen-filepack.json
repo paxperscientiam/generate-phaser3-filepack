@@ -5,7 +5,8 @@
     ],
     "options": {
         "keyFormat": "filebasename",
-        "applyProAssetKeyPrefix": true
+        "applyProAssetKeyPrefix": true,
+        "removeBaseDirFromURL": true
     },
     "targets": [
         {

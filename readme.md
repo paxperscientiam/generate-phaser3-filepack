@@ -22,6 +22,8 @@ This script requires a configuration file following the following structure:
   "options":? {
     "keyFormat"?: "namespaced"|"filebasename" ,
     "outputDuplicateKeyWarning"?: boolean
+    "applyProAssetKeyPrefix"?: boolean
+    "removeBaseDirFromURL"?: boolean
   },
   "targets": [
     {
@@ -103,6 +105,7 @@ If you set a "hint", it's assumed accurate.
 - [x] avoid double processing. This can be done with combination of dirty flags and collative full file list. Or, maybe make a dictionary of all paths, using dirTree in a prior step for that purpose
 - [x] filter out commonsystem and temp files. EG .DS_Store 
 - [x] global ignored paths
+- [x] option to remove basedir
 
 
 ### Bugs
