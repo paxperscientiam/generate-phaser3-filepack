@@ -5,9 +5,7 @@
 // allow override of allowed extensions
 // option to ignore certain subdirectories of AssetTarget.basePath
 
-// support multiple targets!
-
-import dirTree from "directory-tree"
+import dirTree, { DirectoryTree } from "directory-tree"
 import fs from 'fs'
 
 import type  {
@@ -20,6 +18,11 @@ import {
 
 import { guessWhichProcessor, proxyHandler } from "processors"
 import { isCollapsibleType } from "filetype-check"
+
+type DirTreeRecord = DirectoryTree<Record<string,any>>
+type DirTreeRecordTweak = DirTreeRecord & {
+    key: string
+}
 
 const args = process.argv
 
@@ -126,9 +129,9 @@ function buildIt(target: IConfigAssetTarget, re: RegExp|undefined) {
             files.push(item.path)
 
             if (target.hint) {
-                proxyHandler(item, target, target.hint)
+                proxyHandler(item as unknown as DirTreeRecordTweak, target, target.hint)
             } else {
-                guessWhichProcessor(item, target)
+                guessWhichProcessor(item as unknown as DirTreeRecordTweak, target)
             }
 
             if (!filePack.hasOwnProperty(target.key)) {
@@ -141,6 +144,7 @@ function buildIt(target: IConfigAssetTarget, re: RegExp|undefined) {
 
             if ("unknown" === item.type as unknown as string) {
                 filePack.unknowns.push(item.path)
+                return
             }
 
             Reflect.get(filePack, target.key).files.push(item as unknown as IPhaserFilePackAsset)
