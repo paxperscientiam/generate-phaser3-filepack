@@ -17,6 +17,7 @@ Generates a Pack File based on organization of asset files, using a configuratio
 This script requires a configuration file following the following structure:
 ```json
 {
+  "ignoredPaths"?: string|string[] // string ready to be converted to RegEx
   "extensions"?: string // optional comma-separated list of allowed file extensions, default action is not to filter by extension
   "options":? {
     "keyFormat"?: "namespaced"|"filebasename" ,
@@ -28,7 +29,7 @@ This script requires a configuration file following the following structure:
       "basePath": string // which directory to search
       "hint"?: ["audio"|"image"|"bitmapFont"] // optionally assert asset type
       "extensions"?: string // comma separated list of allowed file extensions, takes precedence over higher-level definition
-      "ignoredPaths"?: RegExp|RegExp[]
+      "ignoredPaths"?: string|string[] // string ready to be converted to RegEx
     },
     {
      // additional targets
@@ -101,6 +102,7 @@ If you set a "hint", it's assumed accurate.
 - [ ] idempotence
 - [x] avoid double processing. This can be done with combination of dirty flags and collative full file list. Or, maybe make a dictionary of all paths, using dirTree in a prior step for that purpose
 - [x] filter out commonsystem and temp files. EG .DS_Store 
+- [x] global ignored paths
 
 
 ### Bugs

@@ -21,6 +21,7 @@ export const iConfigAssetTargetSchema = z.object({
 export const iConfigSchema = z.object({
   targets: z.array(iConfigAssetTargetSchema),
   extensions: z.string().optional(),
+  ignoredPaths: z.union([z.string(), z.array(z.string())]).optional(),
   options: z
     .object({
       keyFormat: z

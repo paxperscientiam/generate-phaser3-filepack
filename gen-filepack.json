@@ -1,4 +1,8 @@
 {
+    "ignoredPaths": [
+        "/Map-files/",
+        "/public-bin/"
+    ],
     "options": {
         "keyFormat": "filebasename",
         "applyProAssetKeyPrefix": true

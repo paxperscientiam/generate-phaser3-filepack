@@ -17,6 +17,7 @@ export interface IConfigAssetTarget {
 export interface IConfig {
     targets: IConfigAssetTarget[]
     extensions?: string
+    ignoredPaths?: string|string[]
     options?: {
         keyFormat?: "namespaced"|"filebasename"
         outputDuplicateKeyWarning?: boolean

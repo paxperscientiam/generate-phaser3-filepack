@@ -109,6 +109,10 @@ function buildIt(target: IConfigAssetTarget, re: RegExp|undefined) {
         /\.Thumbs.db/i
     ]
 
+    if (Array.isArray(global.configData?.ignoredPaths)) {
+        global.configData.ignoredPaths.forEach(item => ignoredPaths.push(new RegExp(item)))
+    }
+    
     if (Array.isArray(target.ignoredPaths)) {
         target.ignoredPaths.forEach(item => ignoredPaths.push(new RegExp(item)))
     }
