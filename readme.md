@@ -93,9 +93,9 @@ If you set a "hint", it's assumed accurate.
 
 ### Improvements
 - [ ] allow set `asBlob` and `noAudio` in post-processing.
-- [ ] add check to prevent changing keys of unmoved files
+- [ ] add check to prevent changing keys of unmoved files (only relevant to path-based key naming)
 - [ ] add mode to merge new with pre-existing 
-- [ ] isolate unknow file types
+- [x] isolate unknow file types
 - [ ] post process adjustments.
 - [ ] use phaser's types for development
 - [ ] idempotence
