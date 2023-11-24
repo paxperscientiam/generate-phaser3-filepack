@@ -131,7 +131,7 @@ function buildIt(target: IConfigAssetTarget, re: RegExp|undefined) {
         (item) => {
             if (true === global.configData.options?.removeBaseDirFromURL) {
                 const pathObject = path.parse(item.path)
-                Object.assign(pathObject, {dir: pathObject.dir.split(path.sep).slice(1)})
+                Object.assign(pathObject, {dir: pathObject.dir.split(path.sep).slice(1).join(path.sep)})
                 Object.assign(item, {path: path.format(pathObject)})
             }
 
