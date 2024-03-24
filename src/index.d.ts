@@ -1,13 +1,14 @@
 
 /**
    @toExtract
- */
+*/
 export interface IConfigAssetTarget {
     key: string
     basePath: string
     hint?: "audio"|"image"|"bitmapFont"|"binary"|"css"|string
     extensions?: string
     ignoredPaths?: string|string[]
+    config?: any // phaser specific
 }
 
 
@@ -60,6 +61,24 @@ export type IPhaserFilePackVideoAsset = {
     noAudio?: boolean
     key: string
     url: string | string[]
+}
+
+
+/**
+ * @toExtract
+ */
+export type IPhaserFilePackSpriteSheetAsset = {
+    type: "spritesheet"
+    key: sring
+    url: string
+    config: {
+        frameConfig: {
+            frameWidth: number,
+            frameHeight: number,
+            startFrame: number,
+            endFrame: number
+        }
+    }
 }
 
 

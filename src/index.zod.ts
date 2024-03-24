@@ -16,6 +16,7 @@ export const iConfigAssetTargetSchema = z.object({
     .optional(),
   extensions: z.string().optional(),
   ignoredPaths: z.union([z.string(), z.array(z.string())]).optional(),
+  config: z.any().optional(),
 });
 
 export const iConfigSchema = z.object({
@@ -69,7 +70,7 @@ export const iPhaserFilePackAssetSchema = z
     z.object({
       isDirty: z.boolean().optional(),
       focalKey: z.string().optional(),
-    })
+    }),
   );
 
 export const iPhaserFilePackFilesSchema = z.object({

@@ -179,6 +179,23 @@ function atlasProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     return item
 }
 
+function spriteSheetProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
+    genericProcessor(item, target)
+
+    Object.assign(item, {
+        url: item.path,
+        type: "spritesheet",
+        ...target.config
+    })
+
+    if (true === global.configData.options?.applyProAssetKeyPrefix) {
+        prefixFromType(item)
+    }
+
+    // @ts-ignore
+    delete item.path
+}
+
 export function guessWhichProcessor(item: DirTreeRecordTweak, target: IConfigAssetTarget) {
     // note that order matters here
     if (isSVG(item.path)) {
@@ -213,6 +230,8 @@ export function proxyHandler(item: DirTreeRecordTweak, target: IConfigAssetTarge
     }
 
     switch (hint) {
+        case "spritesheet":
+            return spriteSheetProcessor(item, target)
         case "text":
             return textProcessor(item, target)
         case "css":

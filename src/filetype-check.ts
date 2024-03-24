@@ -34,6 +34,9 @@ export function prefixFromType(item: DirTreeRecordTweak) {
         case "bitmapFont":
             prefix = "Font_"
             break
+        case "spritesheet":
+            prefix = "SS_"
+            break
         default:
             prefix = ""
     }

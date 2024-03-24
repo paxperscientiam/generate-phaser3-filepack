@@ -10,18 +10,17 @@
     },
     "targets": [
         {
-            "key": "myfonts",
-            "basePath": "./assets/fonts",
-            "hint": "bitmapFont"
-        },
-        {
-            "key": "atlas1",
-            "basePath": "./assets/atlas",
-            "hint": "atlas"
-        },
-        {
-            "key": "lol",
-            "basePath": "./assets/"
+            "key": "ss",
+            "basePath": "./assets/ss",
+            "hint": "spritesheet",
+            "config": {
+                "frameConfig": {
+                    "frameWidth": 32,
+                    "frameHeight": 38,
+                    "startFrame": 0,
+                    "endFrame": 8
+                }
+            }
         }
     ]
 }
