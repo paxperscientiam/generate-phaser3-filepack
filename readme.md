@@ -32,6 +32,7 @@ This script requires a configuration file following the following structure:
       "hint"?: ["audio"|"image"|"bitmapFont"] // optionally assert asset type
       "extensions"?: string // comma separated list of allowed file extensions, takes precedence over higher-level definition
       "ignoredPaths"?: string|string[] // string ready to be converted to RegEx
+      "config"?: any // this comes from phaser specifc config for given datatype
     },
     {
      // additional targets

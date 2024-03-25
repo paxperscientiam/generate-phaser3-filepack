@@ -72,6 +72,7 @@ export type IPhaserFilePackSpriteSheetAsset = {
     key: sring
     url: string
     config: {
+        normalMap?: string
         frameConfig: {
             frameWidth: number,
             frameHeight: number,

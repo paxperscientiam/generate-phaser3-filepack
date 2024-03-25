@@ -2,6 +2,7 @@
     "name": "@paxperscientiam/generate-phaser3-filepack",
     "bin": "dist/index.mjs",
     "main": "dist/index.mjs",
+    "types": "src/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/paxperscientiam/generate-phaser3-filepack.git"
@@ -10,7 +11,7 @@
         "build": "ts-to-zod && tsup --cjsInterop --minify --treeshake",
         "dev": "tsup --cjsInterop --watch",
         "test": "node ./dist/index.mjs gen-filepack.json",
-        "prepack": "pnpm run build"
+        "prepublishOnly": "pnpm run build"
     },
     "devDependencies": {
         "@types/node": "^20.11.30",
